@@ -38,6 +38,7 @@
  * @require salamati/plugins/SalamatiTools.js
  * @require plugins/GeoGitHistory.js
  * @require plugins/GeoGitHistoryButton.js
+ * @require salamati/plugins/AuthDialog.js
  */
 
 (function() {
@@ -102,6 +103,75 @@ salamati.Viewer = Ext.extend(gxp.Viewer, {
             	var southPanel = Ext.getCmp('southPanel');
             	southPanel.hide();
             	app.portal.doLayout();
+            	
+            	
+            	/*
+            	 *  TODO
+            	 * Auth Dialog hack
+            	 * 
+            	 */
+            	app.tools.salamati_auth_dialog.window = new Ext.Window({
+            		layout: 'fit',
+            		modal: true,
+            		height: 200,
+            		width: 400,
+            		items: [{
+            			height: 200,
+            			width: 400,
+            			title: 'Please login',
+            			xtype: 'form',
+            			padding: 15,
+            			items: [{
+            				xtype: 'textfield',
+            				id: 'salamati_auth_username',
+            				fieldLabel: 'Username'
+            			},{
+            				xtype: 'textfield',
+            				fieldLabel: 'Password',
+            				id: 'salamati_auth_password',
+            				inputType: 'password'
+            			}],
+            			buttons: [{
+            				text: 'Login',
+            				formBind: true,
+            				id: 'salamati-login-button',
+            				handler: function(button, event){
+            					var username = Ext.getCmp('salamati_auth_username');
+            					var password = Ext.getCmp('salamati_auth_password');
+            					username = username.getValue();
+            					password = password.getValue();
+            					
+            					OpenLayers.Request.POST({
+            						url: '/geoserver/j_spring_security_check',
+            						params: {
+            							username: username,
+            							password: password
+            						},
+            						success: function(a){
+            							app.tools.feature_manager.username = username;
+            							app.tools.feature_manager.password = password;
+            							
+            							app.tools.feature_manager.featureLayer.events.register('featureselected', null, function(){
+            								if(app.tools.feature_manager.featureStore){
+            									if(app.tools.feature_manager.featureStore.proxy.protocol.options.headers == undefined){
+			            							app.tools.feature_manager.featureStore.proxy.protocol.options.headers = {
+	            						                	Authorization : 'Basic ' + $.base64.encode(username + ":" + password)
+	            						            };
+            									}
+            								}
+            							});
+            							app.tools.salamati_auth_dialog.window.close(); 
+            						},
+            						failure: function(b){
+            							console.log("failure: ", b);
+            						}
+            					});
+            				}
+            			}]
+            		}]
+            	});
+            	
+            	app.tools.salamati_auth_dialog.window.show();
             	
                 /*Ext.Ajax.on('beforerequest', showSpinner, this);
                 Ext.Ajax.on('requestcomplete', hideSpinner, this);
@@ -444,6 +514,9 @@ salamati.Viewer = Ext.extend(gxp.Viewer, {
             ptype: "gxp_playback",
             outputTarget: "map.tbar"
         }, {
+        	ptype: "salamati_auth_dialog",
+        	id: "salamati_auth_dialog"
+        }, {
         	ptype: "salamati_tools",
         	outputTarget: "map.tbar",
         	id: "salamati_tools"
@@ -478,7 +551,26 @@ salamati.Viewer = Ext.extend(gxp.Viewer, {
             ptype: "gxp_featuremanager",
             id: "feature_manager",
             paging: false,
-            autoSetLayer: true
+            autoSetLayer: true,
+            listeners: {
+            	beforesave: function(tool, store, params){
+            		if(app.tools.feature_manager.username && app.tools.feature_manager.password){
+	            		OpenLayers.Request.POST({
+	            			url: '/geoserver/j_spring_security_check',
+	            			params: {
+	            				username: app.tools.feature_manager.username,
+	            				password: app.tools.feature_manager.password
+	            			},
+	            			success: function(response){
+	            				store.save();
+	            			},
+	            			failure: function(response){
+	            				console.log("failure: ", response);
+	            			}
+	            		});
+            		}
+            	}
+            }
         },{
             ptype: "gxp_snappingagent",
             id: "snapping_agent",
