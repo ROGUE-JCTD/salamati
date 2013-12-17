@@ -100,7 +100,7 @@ gxp.plugins.GeoGitFeatureAttributeGrid = Ext.extend(gxp.plugins.Tool, {
                 }
                 this.clearLayers();
                 var index = store.url.indexOf('diff?');
-                var url = store.url.substring(0, index) + "featurediff?all=true&oldCommitId=" + oldCommitId + "&newCommitId="+ newCommitId + "&path=" + path + "&output_format=JSON";
+                var url = store.url.substring(0, index) + "featurediff?all=true&oldTreeish=" + oldCommitId + "&newTreeish="+ newCommitId + "&path=" + path + "&output_format=JSON";
                 this.store.url = url;
                 this.store.proxy.conn.url = url;
                 this.store.proxy.url = url;
@@ -179,11 +179,11 @@ gxp.plugins.GeoGitFeatureAttributeGrid = Ext.extend(gxp.plugins.Tool, {
                 plugin.fid = data.fid;
                 plugin.transactionId = transactionId;
                 OpenLayers.Request.GET({
-                    url: plugin.url + "featurediff?all=true&oldCommitId=" + ancestorCommitId + "&newCommitId="+ newCommitId + "&path=" + data.fid + "&transactionId=" + transactionId + "&output_format=JSON",
+                    url: plugin.url + "featurediff?all=true&oldTreeish=" + ancestorCommitId + "&newTreeish="+ newCommitId + "&path=" + data.fid + "&transactionId=" + transactionId + "&output_format=JSON",
                     success: function(results){
                         var theirInfo = Ext.decode(results.responseText);
                         OpenLayers.Request.GET({
-                            url: plugin.url + "featurediff?all=true&oldCommitId=" + ancestorCommitId + "&newCommitId="+ oldCommitId + "&path=" + data.fid + "&transactionId=" + transactionId + "&output_format=JSON",
+                            url: plugin.url + "featurediff?all=true&oldTreeish=" + ancestorCommitId + "&newTreeish="+ oldCommitId + "&path=" + data.fid + "&transactionId=" + transactionId + "&output_format=JSON",
                             success: function(results){
                                 var ourInfo = Ext.decode(results.responseText);
                                 var array = [];

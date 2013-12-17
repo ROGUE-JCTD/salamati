@@ -162,7 +162,7 @@ gxp.plugins.FeatureEditorGrid = Ext.extend(Ext.grid.PropertyGrid, {
                 		    "<div class=\"single last\">";
                 	    }
                 	    popuphtml +=
-                		"      <a href=\"" + url + "\" rel=\"lightbox[media]\"><img height=60 width=60 src=\"" + url + "\" /></a>" +
+                		"      <a href=\"" + url + "\" rel=\"lightbox[media]\"><img style=\"width:60px !important;height:60px !important;\" src=\"" + url + "\" /></a>" +
                 		"    </div>";
                 	    
                 	}

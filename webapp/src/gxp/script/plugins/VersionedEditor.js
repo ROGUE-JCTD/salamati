@@ -197,7 +197,7 @@ gxp.plugins.VersionedEditor = Ext.extend(Ext.TabPanel, {
 
     createDiffStore: function(newCommitId, oldCommitId, addPanel, layerProjection) {
         var url = this.url + 'geogit/' + this.workspace + ':' + this.dataStore + '/featurediff';
-        url = Ext.urlAppend(url, 'path=' + this.path + '&oldCommitId='+ oldCommitId + '&newCommitId=' + newCommitId + '&output_format=json');
+        url = Ext.urlAppend(url, 'path=' + this.path + '&oldTreeish='+ oldCommitId + '&newTreeish=' + newCommitId + '&output_format=json');
         var me = this;
         this.store = new Ext.data.Store({
         	url: url,
@@ -356,7 +356,7 @@ gxp.plugins.VersionedEditor = Ext.extend(Ext.TabPanel, {
     
     updateDiffPanel: function(newCommitId, oldCommitId) {
     	var url = this.url + 'geogit/' + this.workspace + ':' + this.dataStore + '/featurediff';
-        url = Ext.urlAppend(url, 'path=' + this.path + '&oldCommitId='+ oldCommitId + '&newCommitId=' + newCommitId + '&output_format=json');
+        url = Ext.urlAppend(url, 'path=' + this.path + '&oldTreeish='+ oldCommitId + '&newTreeish=' + newCommitId + '&output_format=json');
         this.store.url = url;
         this.store.proxy.setUrl(url, true);
         this.store.load();

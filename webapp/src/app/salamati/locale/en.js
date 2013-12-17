@@ -64,6 +64,7 @@ GeoExt.Lang.add("en", {
         Text_FinishViewing: "Please finish viewing and/or editing of features before you attempt to merge.",
         Text_Cancel: "Cancel",
         Text_Accept: "Accept",
+        Text_Menu: "Menu",
         Text_CancelPopup: "Are you sure you want to cancel this merge?",
         Text_AcceptPopup: "Are you sure you want to complete this merge?",
         Text_MergeStartPopup: "Are you sure you want to start the merge process?",
